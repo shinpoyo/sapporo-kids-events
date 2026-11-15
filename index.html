@@ -6,22 +6,26 @@
 <title>札幌こどもイベント情報</title>
 <style>
   * { box-sizing: border-box; }
-  body { margin:0; font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif; background:#fdf8f2; color:#333; }
+  body { margin:0; font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,-apple-system,sans-serif; background:#fdf8f2; color:#333; }
   header { background:linear-gradient(135deg,#ff9a5a,#ff6b81); color:#fff; padding:18px 16px 14px; }
-  header h1 { margin:0; font-size:22px; }
-  header .sub { font-size:12px; opacity:.92; margin-top:4px; line-height:1.5; }
+  header h1 { margin:0; font-size:22px; letter-spacing:.02em; }
+  header .sub { display:inline-block; font-size:12px; margin-top:8px; line-height:1.5; background:rgba(0,0,0,.14); padding:3px 12px; border-radius:999px; }
   main { max-width:760px; margin:0 auto; padding:12px; }
-  h2 { font-size:17px; margin:20px 0 8px; }
+  h2 { font-size:17px; margin:20px 0 8px; border-left:4px solid #f97316; padding-left:9px; }
   .filters { position:sticky; top:0; background:#fdf8f2; padding:8px 0; z-index:5; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
   .chip { border:1.5px solid #ff9a5a; background:#fff; color:#e06428; border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; }
   .chip.on { background:#ff9a5a; color:#fff; }
   .morebtn { width:100%; padding:11px; border:1.5px solid #ff9a5a; background:#fff; color:#e06428; border-radius:10px; font-size:14px; cursor:pointer; margin:2px 0 6px; }
   .filters select, .filters input { width:100%; padding:9px; border:1px solid #ddd; border-radius:8px; font-size:15px; margin-bottom:6px; background:#fff; }
-  .card { background:#fff; border-radius:12px; padding:12px 14px; margin-bottom:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); display:flex; gap:12px; }
+  .card { background:#fff; border:1px solid #efe6dd; border-radius:12px; padding:12px 14px; margin-bottom:10px; box-shadow:0 1px 4px rgba(0,0,0,.06); display:flex; gap:12px; }
+  .row { display:flex; gap:6px; align-items:flex-start; margin:1px 0; }
+  .row svg { flex:0 0 15px; width:15px; height:15px; margin-top:2.5px; color:#8c7a6b; }
+  .rowtext { flex:1; min-width:0; }
+  .clamp2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .card.dim { opacity:.55; }
   .date { flex:0 0 52px; text-align:center; background:#fff3e8; border-radius:10px; padding:6px 0; height:fit-content; }
-  .date .md { font-size:17px; font-weight:700; color:#e06428; }
+  .date .md { font-size:17px; font-weight:700; color:#e06428; font-variant-numeric:tabular-nums; }
   .date .md.small { font-size:12.5px; padding:2px 0; }
   .date .dow { font-size:11px; color:#999; }
   .body { flex:1; min-width:0; }
@@ -31,7 +35,7 @@
   .badge { font-size:11px; border-radius:6px; padding:2px 7px; background:#eef4ff; color:#3366cc; }
   .badge.pre { background:#ffe9ec; color:#d6336c; }
   .badge.sns { background:#e6fcf5; color:#0b8754; }
-  .badge.free { background:#fff4e0; color:#b97a00; }
+  .badge.free { background:#ecfdf5; color:#047857; }
   .badge.app { background:#f3e8ff; color:#7b2d8b; }
   .badge.now { background:#e06428; color:#fff; }
   .src { font-size:12px; margin-top:6px; }
@@ -41,8 +45,27 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 2.8V6M16 2.8V6"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 21.2S5 15.6 5 9.9a7 7 0 1 1 14 0c0 5.7-7 11.3-7 11.3z"/><circle cx="12" cy="9.9" r="2.6"/>
+    </symbol>
+    <symbol id="i-yen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.6"/><path d="M8.6 7.4 12 11.4l3.4-4M12 11.4v5.4M9.2 13.6h5.6M9.2 16h5.6"/>
+    </symbol>
+    <symbol id="i-smile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.6"/><path d="M8.4 14.2c.9 1.3 2.1 2 3.6 2s2.7-.7 3.6-2"/><path d="M9 9.4h.01M15 9.4h.01" stroke-width="2.6"/>
+    </symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5.5" y="4.5" width="13" height="17" rx="2"/><path d="M9.5 4.5v-1a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 3.5v1M9.3 14.6l2 2 3.6-4.2"/>
+    </symbol>
+  </defs>
+</svg>
 <header>
-  <h1>🧒 札幌こどもイベント情報</h1>
+  <h1>札幌こどもイベント情報</h1>
   <div class="sub" id="headsub"></div>
 </header>
 <main>
@@ -57,11 +80,11 @@
     <input id="f-kw" type="search" placeholder="キーワード検索（例：おはなし会、工作）">
   </div>
   <section id="weekend-sec">
-    <h2>🎈 今週末のおでかけ</h2>
+    <h2>今週末のおでかけ</h2>
     <div id="weekend"></div>
     <button id="wk-more" class="morebtn" style="display:none"></button>
   </section>
-  <h2>📅 イベント一覧</h2>
+  <h2>イベント一覧</h2>
   <div id="list"></div>
   <div class="empty" id="empty" style="display:none">条件に合うイベントがありません</div>
 </main>
@@ -130,6 +153,16 @@ function badges(e){
   if(e.elementaryOnly) h+='<span class="badge">小学生向け</span>';
   return h;
 }
+function row(icon, text, clamp){
+  return `<div class="row"><svg><use href="#${icon}"/></svg><span class="rowtext${clamp?' clamp2':''}">${text}</span></div>`;
+}
+function fmtDateText(t){
+  // 「水曜日」→「水」、「14時30分」→「14:30」のように短く整える
+  return (t||'')
+    .replace(/([月火水木金土日])曜日/g, '$1')
+    .replace(/(\d{1,2})時(\d{1,2})分/g, (m,h,mi)=> h + ':' + String(mi).padStart(2,'0'))
+    .replace(/(\d{1,2})時(?=[〜～\s、,）)]|$)/g, '$1:00');
+}
 function card(e){
   const s = parseD(e.startDate), en = endOf(e);
   let dateHtml;
@@ -141,12 +174,12 @@ function card(e){
     dateHtml = '<div class="date"><div class="md">-</div></div>';
   }
   let m='';
-  if(e.dateText) m+=`🗓 ${esc(e.dateText)}<br>`;
-  if(e.venue) m+=`📍 ${esc(e.venue)}${e.ward?'（'+esc(e.ward)+'）':''}<br>`;
-  else if(e.ward) m+=`📍 ${esc(e.ward)}<br>`;
-  if(e.feeText) m+=`💴 ${esc(e.feeText)}<br>`;
-  if(e.targetAge) m+=`👶 ${esc(e.targetAge)}<br>`;
-  if(e.needsApplication && e.applicationText) m+=`✏️ 申込：${esc(e.applicationText)}`;
+  if(e.dateText) m+=row('i-cal', esc(fmtDateText(e.dateText)), true);
+  if(e.venue) m+=row('i-pin', esc(e.venue) + (e.ward?'（'+esc(e.ward)+'）':''));
+  else if(e.ward) m+=row('i-pin', esc(e.ward));
+  if(e.feeText) m+=row('i-yen', esc(e.feeText));
+  if(e.targetAge) m+=row('i-smile', esc(e.targetAge), true);
+  if(e.needsApplication && e.applicationText) m+=row('i-clip', '申込：' + esc(e.applicationText));
   return `<div class="card${e.elementaryOnly?' dim':''}">${dateHtml}<div class="body">
     <div class="title">${esc(e.title)}</div><div class="badges">${badges(e)}</div>
     <div class="meta">${m}</div>
