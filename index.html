@@ -16,6 +16,7 @@
   .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
   .chip { border:1.5px solid #ff9a5a; background:#fff; color:#e06428; border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; }
   .chip.on { background:#ff9a5a; color:#fff; }
+  .morebtn { width:100%; padding:11px; border:1.5px solid #ff9a5a; background:#fff; color:#e06428; border-radius:10px; font-size:14px; cursor:pointer; margin:2px 0 6px; }
   .filters select, .filters input { width:100%; padding:9px; border:1px solid #ddd; border-radius:8px; font-size:15px; margin-bottom:6px; background:#fff; }
   .card { background:#fff; border-radius:12px; padding:12px 14px; margin-bottom:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); display:flex; gap:12px; }
   .card.dim { opacity:.55; }
@@ -45,11 +46,6 @@
   <div class="sub" id="headsub"></div>
 </header>
 <main>
-  <section id="weekend-sec">
-    <h2>🎈 今週末のおでかけ</h2>
-    <div id="weekend"></div>
-  </section>
-  <h2>📅 イベント一覧</h2>
   <div class="filters">
     <div class="chips">
       <button class="chip" id="f-weekend">週末のみ</button>
@@ -60,6 +56,12 @@
     <select id="f-ward"><option value="">すべての区</option></select>
     <input id="f-kw" type="search" placeholder="キーワード検索（例：おはなし会、工作）">
   </div>
+  <section id="weekend-sec">
+    <h2>🎈 今週末のおでかけ</h2>
+    <div id="weekend"></div>
+    <button id="wk-more" class="morebtn" style="display:none"></button>
+  </section>
+  <h2>📅 イベント一覧</h2>
   <div id="list"></div>
   <div class="empty" id="empty" style="display:none">条件に合うイベントがありません</div>
 </main>
@@ -163,8 +165,22 @@ const wk = live.filter(occursThisWeekend).sort((a,b)=>{
   const sa = parseD(a.startDate), sb = parseD(b.startDate);
   const ga = (sa && sa>=wsat && sa<=wsun) ? 0 : 1, gb = (sb && sb>=wsat && sb<=wsun) ? 0 : 1;
   return (ga-gb) || byUpcoming(a,b);
-}).slice(0,8);
-document.getElementById('weekend').innerHTML = wk.length ? wk.map(card).join('') : '<div class="empty">今週末の単発イベントは見つかりませんでした</div>';
+}).slice(0,12);
+const wkEl = document.getElementById('weekend');
+const wkMore = document.getElementById('wk-more');
+let wkExpanded = false;
+function renderWeekend(){
+  const show = wkExpanded ? wk : wk.slice(0,3);
+  wkEl.innerHTML = wk.length ? show.map(card).join('') : '<div class="empty">今週末の単発イベントは見つかりませんでした</div>';
+  if(wk.length > 3){
+    wkMore.style.display = 'block';
+    wkMore.textContent = wkExpanded ? 'とじる' : `さらに表示（あと${wk.length-3}件）`;
+  } else {
+    wkMore.style.display = 'none';
+  }
+}
+wkMore.addEventListener('click', ()=>{ wkExpanded = !wkExpanded; renderWeekend(); });
+renderWeekend();
 const wards = [...new Set(live.map(e=>e.ward).filter(Boolean))].sort();
 const sel = document.getElementById('f-ward');
 wards.forEach(w=>{ const o=document.createElement('option'); o.value=w; o.textContent=w; sel.appendChild(o); });
